@@ -496,6 +496,9 @@
             },
             filterData (data, column) {
                 return data.filter((row) => {
+                       if(typeof column.filterMethod !== 'function'){
+                    return true;
+                }
                     let status = !column._filterChecked.length;
                     for (let i = 0; i < column._filterChecked.length; i++) {
                         status = column.filterMethod(column._filterChecked[i], row);
@@ -505,6 +508,11 @@
                 });
             },
             filterOtherData (data, index) {
+                          //console.log('filterOtherData',data, index,this.cloneColumns[index])
+                let column = this.cloneColumns[index];
+                if(typeof column.filterRemote == 'function'){
+                    column.filterRemote(column._filterChecked,column.key,column)
+                }
                 this.cloneColumns.forEach((col, colIndex) => {
                     if (colIndex !== index) {
                         data = this.filterData(data, col);
