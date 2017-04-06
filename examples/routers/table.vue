@@ -40,6 +40,7 @@
 </div>
 </template>
 <script>
+<<<<<<< HEAD
 export default {
     data() {
         return {
@@ -91,6 +92,44 @@ export default {
                     width: 120,
                     render() {
                         return `<i-button type="text" size="small">查看</i-button><i-button type="text" size="small">编辑</i-button>`;
+=======
+    export default {
+        data () {
+            return {
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age',
+                        filters:[
+                            {
+                                label: '小学',
+                                value: '小学'
+                            },
+                            {
+                                label: '中学',
+                                value: '大学'
+                            },
+                            {
+                                label: '中学',
+                                value: '中学'
+                            }
+                        ],
+                        filterRemote:function(value,key,column){
+                            var that = this;
+                            this.$Notice.open({title:`正在远程过滤${key}`,desc:value,duration:3,onClose:function(){
+                                that.remoteFilter(value,key,column)
+                            }})
+                            
+                        }
+                    },
+                    {
+                        title: '地址',
+                        key: 'address'
+>>>>>>> table-filters
                     }
                 }
             ],
@@ -199,6 +238,7 @@ export default {
                     update: new Date()
                 })
             }
+<<<<<<< HEAD
             return data;
         },
         formatDate(date) {
@@ -212,6 +252,25 @@ export default {
         changePage() {
             // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
             this.tableData1 = this.mockTableData1();
+=======
+
+        },
+        methods:{
+            remoteFilter:function(val,age,column){
+                this.data1 = [
+                       {
+                        name: '模拟1',
+                        age: 18,
+                        address: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '模拟2',
+                        age: 25,
+                        address: '北京市海淀区西二旗'
+                    },
+                ]
+            }
+>>>>>>> table-filters
         }
     }
 }
