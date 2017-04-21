@@ -49,6 +49,7 @@
             compile () {
                 if (this.column.render) {
                     const $parent = this.context;
+                    const $ajaxTable = this.$parent.$parent.$parent;
                     const template = this.column.render(this.row, this.column, this.index);
                     const cell = document.createElement('div');
                     cell.innerHTML = template;
@@ -68,7 +69,7 @@
                         staticRenderFns: res.staticRenderFns,
                         methods: methods,
                         data () {
-                            return $parent._data;
+                            return Object.assign({ajaxTableVM:$ajaxTable,contextVM:$parent}, $parent._data);
                         }
                     });
                     component.row = this.row;
