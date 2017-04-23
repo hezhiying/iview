@@ -497,7 +497,7 @@
             filterData (data, column) {
                 return data.filter((row) => {
                     //如果定义了远程过滤方法则忽略此方法
-                    if (typeof column.filterRemote === 'function') return;
+                    if (typeof column.filterRemote === 'function') return true;
 
                     let status = !column._filterChecked.length;
                     for (let i = 0; i < column._filterChecked.length; i++) {
@@ -510,7 +510,7 @@
             filterOtherData (data, index) {
                 let column = this.cloneColumns[index];
                 if (typeof column.filterRemote === 'function') {
-                    column.filterRemote.call(this.$parent, column._filterChecked, column.key, column);
+                    column.filterRemote.call(this.currentContext, column._filterChecked, column.key, column);
                 }
 
                 this.cloneColumns.forEach((col, colIndex) => {

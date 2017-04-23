@@ -91,7 +91,7 @@
         },
         methods:{
             remoteFilter:function(val,age,column){
-                this.data1 = [
+                this.data2 = [
                        {
                         name: '模拟1',
                         age: 18,
