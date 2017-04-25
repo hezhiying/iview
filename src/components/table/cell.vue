@@ -1,5 +1,8 @@
 <template>
     <div :class="classes" ref="cell">
+        <template v-if="renderType === 'group'">
+            <Icon :type="collopsed" @click.native="toggleGroup" v-if="row[column.key]"/>
+        </template>
         <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
         <template v-if="renderType === 'selection'">
             <Checkbox :value="checked" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
@@ -10,7 +13,7 @@
 <script>
     import Vue from 'vue';
     import Checkbox from '../checkbox/checkbox.vue';
-
+    import Icon from '../icon/icon.vue';
     export default {
         name: 'TableCell',
         components: { Checkbox },
@@ -29,6 +32,7 @@
         },
         data () {
             return {
+                collopsed: 'arrow-right-b',
                 renderType: '',
                 uid: -1,
                 context: this.$parent.$parent.currentContext
@@ -84,6 +88,17 @@
             },
             toggleSelect () {
                 this.$parent.$parent.toggleSelect(this.index);
+            },
+            toggleGroup(){
+                let ex = true;
+                if(this.collopsed == 'arrow-right-b'){
+                    this.collopsed = 'arrow-down-b';
+                    ex = true;
+                }else{
+                    this.collopsed = 'arrow-right-b';
+                    ex = false;
+                }
+                this.$parent.$parent.toggleGroup(this.index,ex);
             }
         },
         created () {
@@ -91,6 +106,9 @@
                 this.renderType = 'index';
             } else if (this.column.type === 'selection') {
                 this.renderType = 'selection';
+            } else if (this.column.type == 'group'){
+                this.renderType = 'group';
+                console.log(this.column)
             } else if (this.column.render) {
                 this.renderType = 'render';
             } else {

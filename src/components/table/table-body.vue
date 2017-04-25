@@ -7,6 +7,7 @@
             <tr
                 v-for="(row, index) in data"
                 :key="row"
+                v-show="!isGroup || (isGroup && (row.group || objData[row._index]._show))"
                 :class="rowClasses(row._index)"
                 @mouseenter.stop="handleMouseIn(row._index)"
                 @mouseleave.stop="handleMouseOut(row._index)"
@@ -43,10 +44,23 @@
             columns: Array,
             data: Array,    // rebuildData
             objData: Object,
+            isGroup: {
+                type: Boolean,
+                default: false
+            },
             columnsWidth: Object,
             fixed: {
                 type: [Boolean, String],
                 default: false
+            }
+        },
+        computed:{
+            newData(){
+                if(this.$parent.isGroup){
+                    return this.buildData;
+                }else{
+                    return this.data;
+                }
             }
         },
         methods: {
@@ -81,6 +95,9 @@
             dblclickCurrentRow (_index) {
                 this.$parent.dblclickCurrentRow(_index);
             }
+        },
+        created(){
+            this.buildData = [];
         }
     };
 </script>

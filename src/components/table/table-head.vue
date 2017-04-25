@@ -8,6 +8,7 @@
                 <th v-for="(column, index) in columns" :class="alignCls(column)">
                     <div :class="cellClasses(column)">
                         <template v-if="column.type === 'selection'"><Checkbox :value="isSelectAll" @on-change="selectAll"></Checkbox></template>
+                        <template v-if="column.type === 'group'"><Icon type="arrow-right-b"/></template>
                         <template v-else>
                             <span v-html="renderHeader(column, index)"></span>
                             <span :class="[prefixCls + '-sort']" v-if="column.sortable">
@@ -57,6 +58,7 @@
     import Checkbox from '../checkbox/checkbox.vue';
     import Poptip from '../poptip/poptip.vue';
     import iButton from '../button/button.vue';
+    import Icon from '../icon/icon.vue';
     import Mixin from './mixin';
     import Locale from '../../mixins/locale';
 
