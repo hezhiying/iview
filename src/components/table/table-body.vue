@@ -7,8 +7,7 @@
             <tr
                 v-for="(row, index) in data"
                 :key="row"
-                v-show="!isGroup || (isGroup && (row.group || objData[row._index]._show))"
-                :class="rowClasses(row._index)"
+                :class="rowClasses(row._index,row)"
                 @mouseenter.stop="handleMouseIn(row._index)"
                 @mouseleave.stop="handleMouseOut(row._index)"
                 @click.stop="clickCurrentRow(row._index)"
@@ -64,13 +63,14 @@
             }
         },
         methods: {
-            rowClasses (_index) {
+            rowClasses (_index,row) {
                 return [
                     `${this.prefixCls}-row`,
                     this.rowClsName(_index),
                     {
                         [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
-                        [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
+                        [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover,
+                        [`${this.prefixCls}-row-hidden`]: this.objData[_index] && this.isGroup && !row.group && !this.objData[_index]._show
                     }
                 ];
             },
@@ -95,9 +95,6 @@
             dblclickCurrentRow (_index) {
                 this.$parent.dblclickCurrentRow(_index);
             }
-        },
-        created(){
-            this.buildData = [];
         }
     };
 </script>

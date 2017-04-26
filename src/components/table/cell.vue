@@ -1,7 +1,7 @@
 <template>
     <div :class="classes" ref="cell">
         <template v-if="renderType === 'group'">
-            <Icon :type="collopsed" @click.native="toggleGroup" v-if="row[column.key]"/>
+            <Icon :type="collopsed" v-if="row[column.key]" @click.native="toggleGroup"></Icon>
         </template>
         <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
         <template v-if="renderType === 'selection'">
