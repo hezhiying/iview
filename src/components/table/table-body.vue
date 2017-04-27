@@ -5,8 +5,8 @@
         </colgroup>
         <tbody :class="[prefixCls + '-tbody']">
             <tr
-                v-for="(row, index) in data"
-                v-show="!isGroupTable || (row.group || row.parent == groupId)"
+                v-for="(row, index) in newData"
+                v-show="!isGroupTable || (row.group || groupId[row.parent])"
                 :key="row"
                 :class="rowClasses(row._index)"
                 @mouseenter.stop="handleMouseIn(row._index)"
@@ -45,10 +45,6 @@
             columns: Array,
             data: Array,    // rebuildData
             objData: Object,
-            isGroup: {
-                type: Boolean,
-                default: false
-            },
             columnsWidth: Object,
             fixed: {
                 type: [Boolean, String],
@@ -57,7 +53,8 @@
         },
         data(){
         	return {
-                groupId:0
+                buildData:[],
+                groupId:{}
             }
         },
         computed:{
@@ -65,7 +62,25 @@
         	    return this.$parent.isGroup;
             },
             newData(){
-                if(this.$parent.isGroup){
+                if(this.$parent.isGroup && !this.$parent.isAjax){
+                    // ajax data need not sort
+                    this.buildData.length = 0;
+                    let groups = [],items={};
+                    for(let i in this.data){
+                        if(this.data[i].group){
+                            groups.push(this.data[i]);
+                        }else if(this.data[i].parent && items[this.data[i].parent]){
+                            items[this.data[i].parent].push(this.data[i]);
+                        }else if(this.data[i].parent){
+                            items[this.data[i].parent]= [this.data[i]];
+                        }
+                    }
+                    for(let i in groups){
+                        this.buildData.push(groups[i]);
+                        if(items[groups[i].group]){
+                            this.buildData = this.buildData.concat(items[groups[i].group]);
+                        }
+                    }
                     return this.buildData;
                 }else{
                     return this.data;
@@ -106,8 +121,10 @@
             }
         },
         created(){
-
-        	this.$on('on-cell-open',(gid)=>{this.groupId = gid;})
+            this.$on('on-cell-open',(gid,isOpen)=>{
+                this.groupId[gid] = isOpen;
+                this.$forceUpdate();
+            })
         }
     };
 </script>

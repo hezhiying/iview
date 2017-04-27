@@ -93,8 +93,8 @@
             },
             toggleGroup(){
             	this.isOpen = !this.isOpen;
-				this.$parent.$parent.broadcast('TableBody','on-cell-open',this.isOpen?this.row.group:0)
-				this.$parent.broadcast('TableCell','on-cell-open',this.index)
+				this.$parent.$parent.broadcast('TableBody','on-cell-open',[this.row.group,this.isOpen])
+				//this.$parent.broadcast('TableCell','on-cell-open',[this.index,this.isOpen])
             }
         },
         created () {
@@ -109,7 +109,7 @@
             } else {
                 this.renderType = 'normal';
             }
-            this.$on('on-cell-open',(index)=>{
+            this.$on('on-cell-open',(index,isOpen)=>{
             	if(index !== this.index){
             		this.isOpen = false;
                 }
