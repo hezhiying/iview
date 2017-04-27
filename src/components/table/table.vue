@@ -19,6 +19,7 @@
                     :styleObject="tableStyle"
                     :columns="cloneColumns"
                     :data="rebuildData"
+                    :isGroup="isGroup"
                     :columns-width="columnsWidth"
                     :obj-data="objData"></table-body>
             </div>
@@ -54,6 +55,7 @@
                         :styleObject="fixedTableStyle"
                         :columns="leftFixedColumns"
                         :data="rebuildData"
+                        :isGroup="isGroup"
                         :columns-width="columnsWidth"
                         :obj-data="objData"></table-body>
                 </div>
@@ -75,6 +77,7 @@
                         :prefix-cls="prefixCls"
                         :styleObject="fixedRightTableStyle"
                         :columns="rightFixedColumns"
+                        :isGroup="isGroup"
                         :data="rebuildData"
                         :columns-width="columnsWidth"
                         :obj-data="objData"></table-body>
@@ -128,7 +131,7 @@
             },
             border: {
                 type: Boolean,
-                default: false
+               default: false
             },
             showHeader: {
                 type: Boolean,
@@ -152,6 +155,10 @@
             },
             noFilteredDataText: {
                 type: String
+            },
+            isGroup:{
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -392,6 +399,7 @@
                 for (let i in this.objData) {
                     if (parseInt(i) === _index) {
                         data = this.objData[i];
+                        break;
                     }
                 }
                 const status = !data._isChecked;
@@ -403,6 +411,26 @@
                     this.$emit('on-select', selection, JSON.parse(JSON.stringify(this.data[_index])));
                 }
                 this.$emit('on-selection-change', selection);
+            },
+            toggleGroup(_index,extend){
+                let data = {};
+                let j = 0;
+                for (let i in this.objData) {
+                    j = parseInt(i);
+                    if ( j === _index) {
+                        data = this.objData[j];
+                        break;
+                    }
+                }
+                if(data){
+                    let group = data.group;
+                    for(let i in this.objData){
+                        j = parseInt(i);
+                        if(this.objData[j].parent == group){
+                            this.objData[j]._show = extend;
+                        }
+                    }
+                }
             },
             selectAll (status) {
                 // this.rebuildData.forEach((data) => {

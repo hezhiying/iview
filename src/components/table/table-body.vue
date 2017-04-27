@@ -7,7 +7,7 @@
             <tr
                 v-for="(row, index) in data"
                 :key="row"
-                :class="rowClasses(row._index)"
+                :class="rowClasses(row._index,row)"
                 @mouseenter.stop="handleMouseIn(row._index)"
                 @mouseleave.stop="handleMouseOut(row._index)"
                 @click.stop="clickCurrentRow(row._index)"
@@ -43,20 +43,34 @@
             columns: Array,
             data: Array,    // rebuildData
             objData: Object,
+            isGroup: {
+                type: Boolean,
+                default: false
+            },
             columnsWidth: Object,
             fixed: {
                 type: [Boolean, String],
                 default: false
             }
         },
+        computed:{
+            newData(){
+                if(this.$parent.isGroup){
+                    return this.buildData;
+                }else{
+                    return this.data;
+                }
+            }
+        },
         methods: {
-            rowClasses (_index) {
+            rowClasses (_index,row) {
                 return [
                     `${this.prefixCls}-row`,
                     this.rowClsName(_index),
                     {
                         [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
-                        [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
+                        [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover,
+                        [`${this.prefixCls}-row-hidden`]: this.objData[_index] && this.isGroup && !row.group && !this.objData[_index]._show
                     }
                 ];
             },
