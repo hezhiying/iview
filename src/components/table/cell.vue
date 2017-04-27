@@ -1,7 +1,7 @@
 <template>
     <div :class="classes" ref="cell">
         <template v-if="renderType === 'group'">
-            <Icon :type="isOpen?'arrow-down-b':'arrow-right-b'" v-if="row[column.key]" @click.native="toggleGroup" style="cursor: pointer;"></Icon>
+            <Icon :type="isOpen?'arrow-down-b':'arrow-right-b'" v-if="row[column.key]" @click.native="toggleGroup" size="16"></Icon>
         </template>
         <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
         <template v-if="renderType === 'selection'">
@@ -94,7 +94,6 @@
             toggleGroup(){
             	this.isOpen = !this.isOpen;
 				this.$parent.$parent.broadcast('TableBody','on-cell-open',[this.row.group,this.isOpen])
-				//this.$parent.broadcast('TableCell','on-cell-open',[this.index,this.isOpen])
             }
         },
         created () {
@@ -104,16 +103,15 @@
                 this.renderType = 'selection';
             } else if (this.column.type == 'group'){
                 this.renderType = 'group';
+                this.$on('on-row-collopse',(collopsed)=>{
+                    this.isOpen = !collopsed;
+                    this.$parent.$parent.broadcast('TableBody','on-cell-open',[this.row.group,this.isOpen]);
+                });
             } else if (this.column.render) {
                 this.renderType = 'render';
             } else {
                 this.renderType = 'normal';
             }
-            this.$on('on-cell-open',(index,isOpen)=>{
-            	if(index !== this.index){
-            		this.isOpen = false;
-                }
-            })
         },
         mounted () {
             this.$nextTick(() => {

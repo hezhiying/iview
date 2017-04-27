@@ -8,7 +8,7 @@
                 <th v-for="(column, index) in columns" :class="alignCls(column)">
                     <div :class="cellClasses(column)">
                         <template v-if="column.type === 'selection'"><Checkbox :value="isSelectAll" @on-change="selectAll"></Checkbox></template>
-                        <template v-if="column.type === 'group'"><Icon type="arrow-right-b"/></template>
+                        <template v-if="column.type === 'group'"><Icon :type="collopsed?'arrow-right-b':'arrow-down-b'" size="16" @click.native="toggleGroup"/></template>
                         <template v-else>
                             <span v-html="renderHeader(column, index)"></span>
                             <span :class="[prefixCls + '-sort']" v-if="column.sortable">
@@ -61,6 +61,7 @@
     import Icon from '../icon/icon.vue';
     import Mixin from './mixin';
     import Locale from '../../mixins/locale';
+    import mixins from '../../mixins/emitter'
 
     export default {
         name: 'TableHead',
@@ -76,6 +77,11 @@
             fixed: {
                 type: [Boolean, String],
                 default: false
+            }
+        },
+        data(){
+            return {
+                collopsed: true
             }
         },
         computed: {
@@ -151,6 +157,10 @@
             },
             handleFilterHide (index) {
                 this.$parent.handleFilterHide(index);
+            },
+            toggleGroup(){
+                this.collopsed = !this.collopsed;
+                this.$parent.broadcast('TableCell','on-row-collopse',this.collopsed);
             }
         }
     };
