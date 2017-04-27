@@ -110,7 +110,6 @@
                 this.renderType = 'normal';
             }
             this.$on('on-cell-open',(index)=>{
-            	console.log('index',index,this.index)
             	if(index !== this.index){
             		this.isOpen = false;
                 }
