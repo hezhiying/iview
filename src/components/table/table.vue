@@ -94,12 +94,13 @@
     import Csv from '../../utils/csv';
     import ExportCsv from './export-csv';
     import Locale from '../../mixins/locale';
+	import Emitter from '../../mixins/emitter';
 
     const prefixCls = 'ivu-table';
 
     export default {
         name: 'Table',
-        mixins: [ Locale ],
+        mixins: [ Emitter, Locale, ],
         components: { tableHead, tableBody },
         props: {
             data: {

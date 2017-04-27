@@ -6,8 +6,9 @@
         <tbody :class="[prefixCls + '-tbody']">
             <tr
                 v-for="(row, index) in data"
+                v-show="!isGroupTable || (row.group || row.parent == groupId)"
                 :key="row"
-                :class="rowClasses(row._index,row)"
+                :class="rowClasses(row._index)"
                 @mouseenter.stop="handleMouseIn(row._index)"
                 @mouseleave.stop="handleMouseOut(row._index)"
                 @click.stop="clickCurrentRow(row._index)"
@@ -32,10 +33,11 @@
     // todo :key="row"
     import Cell from './cell.vue';
     import Mixin from './mixin';
+	import Emitter from '../../mixins/emitter';
 
     export default {
         name: 'TableBody',
-        mixins: [ Mixin ],
+        mixins: [ Emitter, Mixin ],
         components: { Cell },
         props: {
             prefixCls: String,
@@ -53,7 +55,15 @@
                 default: false
             }
         },
+        data(){
+        	return {
+                groupId:0
+            }
+        },
         computed:{
+        	isGroupTable(){
+        	    return this.$parent.isGroup;
+            },
             newData(){
                 if(this.$parent.isGroup){
                     return this.buildData;
@@ -63,14 +73,13 @@
             }
         },
         methods: {
-            rowClasses (_index,row) {
+            rowClasses (_index) {
                 return [
                     `${this.prefixCls}-row`,
                     this.rowClsName(_index),
                     {
                         [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
                         [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover,
-                        [`${this.prefixCls}-row-hidden`]: this.objData[_index] && this.isGroup && !row.group && !this.objData[_index]._show
                     }
                 ];
             },
@@ -95,6 +104,10 @@
             dblclickCurrentRow (_index) {
                 this.$parent.dblclickCurrentRow(_index);
             }
+        },
+        created(){
+
+        	this.$on('on-cell-open',(gid)=>{this.groupId = gid;})
         }
     };
 </script>

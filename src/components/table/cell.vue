@@ -1,7 +1,7 @@
 <template>
     <div :class="classes" ref="cell">
         <template v-if="renderType === 'group'">
-            <Icon :type="collopsed" v-if="row[column.key]" @click.native="toggleGroup"></Icon>
+            <Icon :type="isOpen?'arrow-down-b':'arrow-right-b'" v-if="row[column.key]" @click.native="toggleGroup" style="cursor: pointer;"></Icon>
         </template>
         <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
         <template v-if="renderType === 'selection'">
@@ -14,9 +14,11 @@
     import Vue from 'vue';
     import Checkbox from '../checkbox/checkbox.vue';
     import Icon from '../icon/icon.vue';
+    import mixins from '../../mixins/emitter'
     export default {
         name: 'TableCell',
         components: { Checkbox },
+        mixins:[mixins],
         props: {
             prefixCls: String,
             row: Object,
@@ -32,7 +34,7 @@
         },
         data () {
             return {
-                collopsed: 'arrow-right-b',
+                isOpen:false,
                 renderType: '',
                 uid: -1,
                 context: this.$parent.$parent.currentContext
@@ -90,15 +92,9 @@
                 this.$parent.$parent.toggleSelect(this.index);
             },
             toggleGroup(){
-                let ex = true;
-                if(this.collopsed == 'arrow-right-b'){
-                    this.collopsed = 'arrow-down-b';
-                    ex = true;
-                }else{
-                    this.collopsed = 'arrow-right-b';
-                    ex = false;
-                }
-                this.$parent.$parent.toggleGroup(this.index,ex);
+            	this.isOpen = !this.isOpen;
+				this.$parent.$parent.broadcast('TableBody','on-cell-open',this.isOpen?this.row.group:0)
+				this.$parent.broadcast('TableCell','on-cell-open',this.index)
             }
         },
         created () {
@@ -108,12 +104,17 @@
                 this.renderType = 'selection';
             } else if (this.column.type == 'group'){
                 this.renderType = 'group';
-                console.log(this.column)
             } else if (this.column.render) {
                 this.renderType = 'render';
             } else {
                 this.renderType = 'normal';
             }
+            this.$on('on-cell-open',(index)=>{
+            	console.log('index',index,this.index)
+            	if(index !== this.index){
+            		this.isOpen = false;
+                }
+            })
         },
         mounted () {
             this.$nextTick(() => {
