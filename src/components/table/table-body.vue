@@ -81,8 +81,10 @@
                             this.buildData = this.buildData.concat(items[groups[i].group]);
                         }
                     }
+                    this.fistGroup(this.buildData);
                     return this.buildData;
                 }else{
+                    this.fistGroup(this.data);
                     return this.data;
                 }
             }
@@ -118,6 +120,14 @@
             },
             dblclickCurrentRow (_index) {
                 this.$parent.dblclickCurrentRow(_index);
+            },
+            fistGroup(data){
+                for(let i in data){
+                    if(data[i].group){
+                        this.groupId[data[i].group] = true;
+                        break;
+                    }
+                }
             }
         },
         created(){
