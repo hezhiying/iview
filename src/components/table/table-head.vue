@@ -8,7 +8,7 @@
                 <th v-for="(column, index) in columns" :class="alignCls(column)">
                     <div :class="cellClasses(column)">
                         <template v-if="column.type === 'selection'"><Checkbox :value="isSelectAll" @on-change="selectAll"></Checkbox></template>
-                        <template v-if="column.type === 'group'"><Icon :type="collopsed?'arrow-right-b':'arrow-down-b'" size="16" @click.native="toggleGroup"/></template>
+                        <template v-else-if="column.type === 'group'"><Icon :type="collopsed?'arrow-right-b':'arrow-down-b'" size="15" @click.native="toggleGroup"/></template>
                         <template v-else>
                             <span v-html="renderHeader(column, index)"></span>
                             <span :class="[prefixCls + '-sort']" v-if="column.sortable">
@@ -158,7 +158,9 @@
             handleFilterHide (index) {
                 this.$parent.handleFilterHide(index);
             },
-            toggleGroup(){
+            toggleGroup(event){
+                event.stopPropagation();
+                event.preventDefault();
                 this.collopsed = !this.collopsed;
                 this.$parent.broadcast('TableCell','on-row-collopse',this.collopsed);
             }

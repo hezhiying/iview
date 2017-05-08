@@ -3,11 +3,11 @@
         <template v-if="renderType === 'group'">
             <Icon :type="isOpen?'arrow-down-b':'arrow-right-b'" v-if="row[column.key]" @click.native="toggleGroup" size="16"></Icon>
         </template>
-        <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
-        <template v-if="renderType === 'selection'">
+        <template v-else-if="renderType === 'index'">{{naturalIndex + 1}}</template>
+        <template v-else-if="renderType === 'selection'">
             <Checkbox :value="checked" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
         </template>
-        <template v-if="renderType === 'normal'"><span v-html="row[column.key]"></span></template>
+        <template v-else-if="renderType === 'normal'"><span v-html="row[column.key]"></span></template>
     </div>
 </template>
 <script>
